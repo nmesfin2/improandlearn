@@ -3,6 +3,9 @@ package com.learning.datastructure;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 import org.junit.Test;
 
 public class BinaryTree<T>  {
@@ -95,6 +98,22 @@ public class BinaryTree<T>  {
 		return root.getLeft() == null ? (T) root.getValue() : findSmallestValue(root.getLeft());
 	}
 	
+	public int countLeaves() {
+		return countLeavesHelper(root);
+	}
+	//count leaves
+	private int countLeavesHelper(Node root) {
+		if(root == null) {
+			return 0;
+		}
+		
+		if(root.getLeft() == null && root.getRight() == null) {
+			return 1;
+		}
+		
+		return countLeavesHelper(root.getLeft()) + countLeavesHelper(root.getRight());
+	}
+	
 	// In order traversal
 	public static void traverseInOrder(Node node) {
 	    if (node != null) {
@@ -123,6 +142,31 @@ public class BinaryTree<T>  {
 	    }
 	}
 	
+	// traverse level order
+	public void traverseLevelOrder() {
+		if(root == null) {
+			return;
+		}
+		
+		Queue<Node> nodes = new LinkedList<>();
+		nodes.add(root);
+
+		while(!nodes.isEmpty()) {
+			Node node = nodes.remove();
+			
+			
+			System.out.print(" " + node.getValue());
+			
+			if(node.getLeft() != null) {
+				nodes.add(node.getLeft());
+			}
+			
+			if(node.getRight() != null) {
+				nodes.add(node.getRight());
+			}
+		}
+	}
+	
 	
 	public static void main(String [] args) {
 		BinaryTree bt = new BinaryTree();
@@ -134,6 +178,7 @@ public class BinaryTree<T>  {
 		bt.add(7);
 		bt.add(9);
 		
+		System.out.println(bt.countLeaves());
 		
 		System.out.print("traversal in order: "); 
 		traverseInOrder(bt.root);
@@ -145,6 +190,10 @@ public class BinaryTree<T>  {
 		
 		System.out.print("traversal post order: ");
 		traversePostOrder(bt.root);
+		System.out.println();
+		
+		System.out.print("traversal Level Order (Breadth first): "); 
+		bt.traverseLevelOrder();
 	}
 }
 
