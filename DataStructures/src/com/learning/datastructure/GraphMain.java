@@ -46,10 +46,10 @@ public class GraphMain {
 			System.out.println();
 		}
 		
-		GraphNode srcNode = new GraphNode("London");
+		GraphNode srcNode = new GraphNode("Rome");
 		GraphNode destNode = new GraphNode("Seattle");
 		
-		System.out.println(shortestPath(g, srcNode, destNode ));
+		System.out.println("number of edges :" + shortestPath(g, srcNode, destNode ));
 		
 		
 	}
@@ -59,30 +59,29 @@ public class GraphMain {
 		Set<GraphNode> isVisited = new LinkedHashSet<GraphNode>();
 		LinkedList<GraphNode> queue = new LinkedList<>();
 
-		int shortest = 1;	
+		Map<GraphNode, Integer> dist = new HashMap<GraphNode, Integer>();
+		Map<GraphNode, GraphNode> pred = new HashMap<GraphNode, GraphNode>();
+		
+		int shortest = 0;	
 		queue.add(src);
 		isVisited.add(src);
+		dist.put(src, 0);
+		
 		while(!queue.isEmpty()) {
+			
 			GraphNode q = queue.remove();
+			
 			for(GraphNode w: g.getGraphList().get(q)  ) {
+				
 				if(!isVisited.contains(w)) {
+					isVisited.add(w);
+					dist.put(w, dist.get(q) + 1);
+					pred.put(w, q);
 					shortest++;
 					queue.add(w);
-					isVisited.add(w);
-					//w.setVisited(true);
 					
-					if(g.getGraphList().get(w).contains(dest)) {
-						isVisited.add(dest);
-						System.out.println("inside if");
-						for (GraphNode graphNode : isVisited) {
-							System.out.println(graphNode.getCity());
-						}
-						
-						shortest = isVisited.size();
-						return shortest;
-					}else {
-						isVisited.remove(w);
-						//shortest--;
+					if(w.equals(dest)) {
+						break;
 					}
 				}
 				
@@ -91,10 +90,43 @@ public class GraphMain {
 		}
 		
 		
-		for (GraphNode graphNode : isVisited) {
-			System.out.println(graphNode.getCity());
+		for (GraphNode graphNode : dist.keySet()) {
+			System.out.println(" graphNode : " + graphNode.getCity() + " " + dist.get(graphNode));
 		}
+		
+		for (GraphNode graphNode : pred.keySet()) {
+				System.out.println(" graphNode : " + graphNode.getCity() + " " + pred.get(graphNode).getCity());
+		}
+		
+		if(pred.get(dest) != null) {
+			System.out.print("The path from Source to Destination in reverse order: ");
+			System.out.print("[ " + dest.getCity() + " ");
+			printPath(pred, dest);
+			
+			
+			System.out.print("]");
+			System.out.println();
+		}
+		
+		
+		shortest = dist.get(dest);
 		return shortest;
+
+		
+	}
+	
+	
+	public static void printPath(Map<GraphNode, GraphNode> path,  GraphNode curr) {
+		if(path.get(curr) == null) {
+			return;
+		}else {
+			
+
+			System.out.print(path.get(curr).getCity() + " ");
+			curr = path.get(curr);
+			printPath(path, curr);
+
+		}
 
 		
 	}
