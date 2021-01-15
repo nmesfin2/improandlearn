@@ -21,35 +21,36 @@ public class GraphMain {
 		g.addGraphNode("Brazil");
 		g.addGraphNode("Seattle");
 		
-		g.addEdge("Rome", "London");
-		g.addEdge("Rome", "Paris");
-		g.addEdge("Rome", "German");
+		g.addEdge("Rome", "London", 2);
+		g.addEdge("Rome", "Paris", 4);
+		g.addEdge("Rome", "German", 3);
 		
-		g.addEdge("Paris", "German");
-		g.addEdge("Paris", "Brazil");
+		g.addEdge("Paris", "German", 2);
+		g.addEdge("Paris", "Brazil", 1);
 		
-		g.addEdge("London", "Addis");
-		g.addEdge("London", "German");
+		g.addEdge("London", "Addis", 1);
+		g.addEdge("London", "German", 2);
 		
-		g.addEdge("Addis", "Seattle");
-		g.addEdge("German", "Seattle");	
-		g.addEdge("Brazil", "Seattle");
+		g.addEdge("Addis", "Seattle", 2);
+		g.addEdge("German", "Seattle", 1);	
+		g.addEdge("Brazil", "Seattle", 3);
 		
 	
-		for (GraphNode n : g.getGraphList().keySet()) {
-			System.out.println(n.getCity());
-			System.out.println("-----------------------------------------------------");
-			for(GraphNode adjN: g.getGraphList().get(n)) {
-				System.out.println(" " + adjN.city);
-			}
-			
-			System.out.println();
-		}
-		
-		GraphNode srcNode = new GraphNode("Rome");
+//		for (GraphNode n : g.getGraphList().keySet()) {
+//			System.out.println(n.getCity());
+//			System.out.println("-----------------------------------------------------");
+//			for(GraphNode adjN: g.getGraphList().get(n)) {
+//				System.out.println(" " + adjN.city);
+//			}
+//			
+//			System.out.println();
+//		}
+//		
+		GraphNode srcNode = new GraphNode("Paris");
 		GraphNode destNode = new GraphNode("Seattle");
 		
-		System.out.println("number of edges :" + shortestPath(g, srcNode, destNode ));
+		//System.out.println("number of edges :" + shortestPath(g, srcNode, destNode ));
+		shortestPathDjikstra(g, srcNode, destNode );
 		
 		
 	}
@@ -128,6 +129,75 @@ public class GraphMain {
 
 		}
 
+		
+	}
+	
+	
+	public static int shortestPathDjikstra(Graph g, GraphNode src, GraphNode dest) {
+		int Vertices = g.getGraphList().size();
+		
+		Map<String, Integer> distance = new HashMap<>();
+		Map<GraphNode, Boolean> visited = new HashMap<>();
+		Map<GraphNode, GraphNode> pred = new HashMap<>();
+		
+		for(GraphNode gn: g.getGraphList().keySet() ) {
+			if(gn.getCity().equals(src.getCity())) {
+				distance.put(gn.getCity(), 0);
+			}else {
+				distance.put(gn.getCity(), Integer.MAX_VALUE);
+			}
+			visited.put(gn, false);	
+		}
+		
+		for(int i = 0; i < Vertices - 1; i++) {
+			GraphNode v = minimumDistanceNode(distance, visited, g);
+			if(v.getCity().equals(dest.getCity())) {
+				break;
+			}
+			visited.put(v, true);
+			
+			for(GraphNode w : g.getGraphList().get(v)) {
+				if(distance.get(w.getCity()) > distance.get(v.getCity()) + w.getEdge()) {
+					distance.put(w.getCity(), distance.get(v.getCity()) + w.getEdge());
+					pred.put(w, v);
+				}
+			}
+
+			
+		}
+		
+		System.out.println("distance--------------------");
+		for (String city : distance.keySet()) {
+			
+				System.out.println(" graphNode : " + city + " " + distance.get(city));
+			
+		}
+		System.out.println();
+		System.out.println("visited--------------------");
+		for (GraphNode graphNode : visited.keySet()) {
+			System.out.println(" graphNode : " + graphNode.getCity() + " " + visited.get(graphNode));
+		}
+		System.out.println();
+		System.out.println("Pred--------------------");
+		for (GraphNode graphNode : pred.keySet()) {
+			System.out.println(" graphNode : " + graphNode.getCity() + " " + pred.get(graphNode).getCity());
+		}
+		return 0;
+	}
+	
+	public static GraphNode minimumDistanceNode(Map<String, Integer> distance, Map<GraphNode, Boolean> visited,  Graph g) {
+		GraphNode gn = new GraphNode();
+		
+		int min = Integer.MAX_VALUE;
+		// initialize min value;
+		for(GraphNode key: g.getGraphList().keySet()) {
+			if(visited.get(key) == false && distance.get(key.getCity()) <= min) {
+				min = distance.get(key.getCity());
+				gn = key;
+			}
+		}
+		
+		return gn;
 		
 	}
 

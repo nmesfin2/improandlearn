@@ -29,14 +29,15 @@ public class Graph {
 		graphList.putIfAbsent(newGraphNode, n);
 	}
 	
-	public void addEdge(String firstGraphNode, String secondGraphNode) {
+	public void addEdge(String firstGraphNode, String secondGraphNode, int edge) {
 		GraphNode fVertex = new GraphNode(firstGraphNode);
-		GraphNode sVertex = new GraphNode(secondGraphNode);
+		GraphNode sVertex = new GraphNode(secondGraphNode, edge);
 
-		ArrayList<GraphNode> n = graphList.get(fVertex);
+//		ArrayList<GraphNode> n = graphList.get(fVertex);
 		
-		System.out.println("n n: " + n);
-		n.add(sVertex);
+		graphList.get(fVertex).add(sVertex);
+		//System.out.println("n n: " + n);
+		//n.add(sVertex);
 		//graphList.get(sVertex).add(fVertex);
 		
 		
