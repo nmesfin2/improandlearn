@@ -27,7 +27,7 @@ public class SelectionSort {
 			}
 		}
 		swap(a, index, last);
-		selectionSortingHelper(a, last -1);
+		selectionSortingHelper(a, last-1);
 	}
 	
 	public static void swap(int a[], int i, int j) {
